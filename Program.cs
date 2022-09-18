@@ -1,3 +1,14 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using Discord;
+using Discord.WebSocket;
 
-Console.WriteLine("Hello, World!");
+public class Program
+{
+    private DiscordSocketClient _client;
+    public static Task Main(string[] args) => new Bot().MainAsync();
+    private Task Log(LogMessage msg)
+    {
+        Console.WriteLine(msg.ToString());
+        return Task.CompletedTask;
+    }
+
+}
