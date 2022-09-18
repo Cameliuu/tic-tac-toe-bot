@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using tic_tac_toe_bot;
 
 public class Program
 {
