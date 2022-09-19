@@ -1,3 +1,4 @@
+using System.Threading.Channels;
 using Discord;
 using Discord.WebSocket;
 
@@ -12,42 +13,67 @@ public class ComponentsManager
         _client.ButtonExecuted += ComponentHandler;
     }
 
-    public static async Task updateComponent(SocketMessageComponent component)
+    public static async Task UpdateComponent(SocketMessageComponent component, short row, short col)
     {
-        var builder = new ComponentBuilder()
-            .WithButton("rahat", "custom-id",style:ButtonStyle.Primary);
-        await component.UpdateAsync(properties => properties.Components = builder.Build());
+        if(GameManager.active)
+        {
+            if(component.User.Username == GameManager.Player1.name || component.User.Username == GameManager.Player2.name)
+            {
+                if(component.User.Username == GameManager.Player1.name)
+                {
+                    if(GameManager.turn == 'X')
+                    {
+                        GameManager.board[row, col] = GameManager.Player1.choice;
+                        await component.UpdateAsync(properties => properties.Components = GameManager.GetBuilder().Result.Build());
+                    }
+                    else
+                    {
+                        await component.Channel.SendMessageAsync($"{component.User.Mention}, nu este randul tau!");
+                    }
+                }
+            }
+            else
+            {
+                await component.Channel.SendMessageAsync(
+                    $"{component.User.Mention} nu poti participa intrucat este deja un joc in desfasurare");
+            }
+        }
+        else
+        {
+            await component.Channel.SendMessageAsync("Nu este niciun joc in desfasurare");
+        }
     }
-    public static async Task ComponentHandler(SocketMessageComponent component)
+    public  static async Task ComponentHandler(SocketMessageComponent component)
     {
         switch (component.Data.CustomId)
         {
             case "1":
-                updateComponent(component);
+                await UpdateComponent(component,0,0);
+                
                 break;
             case "2":
-                updateComponent(component);
+                await UpdateComponent(component,0,1);
                 break;
             case "3":
-                updateComponent(component);
+                await UpdateComponent(component,0,2);
                 break;
             case "4":
-                updateComponent(component);
+                await UpdateComponent(component,1,0);
                 break;
             case "5":
-                updateComponent(component);
+                await UpdateComponent(component,1,1);
                 break;
             case "6":
-                updateComponent(component);
+                await UpdateComponent(component,1,2);
                 break;
             case "7":
-                updateComponent(component);
+                await UpdateComponent(component,2,0);
                 break;
             case "8":
-                updateComponent(component);
+                await UpdateComponent(component,2,1);
                 break;
             case "9":
-                updateComponent(component);
+                await UpdateComponent(component,2,2);
                 break;
             
             
