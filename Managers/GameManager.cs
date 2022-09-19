@@ -12,7 +12,7 @@ public class GameManager
     public  static char[,] board=new char[3, 3]{{'1','2','3'},{'4','5','6'},{'7','8','9'}};
     public  static bool active { get; set; }
     public static char turn { get; set; }
-    
+    public static short tries { get; set; }
     public  static async Task StartGame(SocketUser user, ISocketMessageChannel channel,string player,SocketGuild guild)
     {
         
