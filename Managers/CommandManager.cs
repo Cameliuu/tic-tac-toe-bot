@@ -1,4 +1,5 @@
 using System.Reflection;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 
@@ -6,33 +7,28 @@ namespace tic_tac_toe_bot.Managers;
 
 public class CommandManager
 {
-    private DiscordSocketClient _client = ServiceManager.GetService<DiscordSocketClient>();
-    private CommandService _commandservice = ServiceManager.GetService<CommandService>();
-    public async Task InstallCommandsAsync()
+    private static DiscordSocketClient _client = ServiceManager.GetService<DiscordSocketClient>();
+    private static CommandService _commandservice = ServiceManager.GetService<CommandService>();
+    public static async Task InstallCommandsAsync()
     {
         _client.MessageReceived += HandleCommandAsync;
-        
-        await _commandservice.AddModulesAsync(assembly: Assembly.GetEntryAssembly(),ServiceManager.Provider);
+        await _commandservice.AddModulesAsync(Assembly.GetEntryAssembly(),ServiceManager.Provider);
         foreach (var command in _commandservice.Commands)
-            Console.WriteLine($"Command {command} was loaded!");
+            Console.WriteLine($"Command {command.Name} was loaded!");
     }
 
-    private async Task HandleCommandAsync(SocketMessage messageParam)
+    private static async Task HandleCommandAsync(SocketMessage messageParam)
     {
-        var message = messageParam as SocketUserMessage;
+        
+        var message = messageParam as SocketUserMessage;    
         if (message == null) return;
-        
-        int argPos = 0;
-        
-        if (!(message.HasCharPrefix('!', ref argPos) || 
-              message.HasMentionPrefix(_client.CurrentUser, ref argPos)) ||
-            message.Author.IsBot)
+        var argPos = 0;
+        if (message.Author.IsBot || message.Channel is IDMChannel) return;
+
+        if (!(message.HasStringPrefix(ConfigManager.Config.Prefix, ref argPos)) ||
+            (message.HasMentionPrefix(_client.CurrentUser, ref argPos)))
             return;
-        
         var context = new SocketCommandContext(_client, message);
-        await _commandservice.ExecuteAsync(
-            context: context, 
-            argPos: argPos,
-            services: null);
+        var result = await _commandservice.ExecuteAsync(context,argPos,ServiceManager.Provider);
     }
 }
