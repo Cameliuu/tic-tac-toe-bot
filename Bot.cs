@@ -13,15 +13,16 @@ namespace tic_tac_toe_bot
 
     public class Bot
     {
-        private DiscordSocketClient _client;
-        private CommandService _commandService; 
+        private static DiscordSocketClient _client;
+        private static CommandService _commandService; 
 
         public Bot()
         {
             
             _client = new DiscordSocketClient(new DiscordSocketConfig()
             {
-                LogLevel = LogSeverity.Debug
+                LogLevel = LogSeverity.Debug,
+                GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.MessageContent
             });
             _commandService = new CommandService(new CommandServiceConfig()
             {
@@ -38,10 +39,17 @@ namespace tic_tac_toe_bot
 
 
 
-
+        public static async Task OnReady()
+        {
+            Console.WriteLine($"{DateTime.Now}\tBot is Ready");
+            await _client.SetStatusAsync(UserStatus.Online);
+            await _client.SetGameAsync($"Prefix: {ConfigManager.Config.Prefix}");
+        }
         public async Task MainAsync()
         {
+            _client.Ready += OnReady;
             if (string.IsNullOrWhiteSpace(ConfigManager.Config.Token)) return;
+            await CommandManager.InstallCommandsAsync();
             await _client.LoginAsync(TokenType.Bot, ConfigManager.Config.Token);
             await _client.StartAsync();
 
