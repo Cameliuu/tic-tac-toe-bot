@@ -13,5 +13,13 @@ public class GameManager
 
        var playerS=await CustomUserTypeReader.GetUserFromString(player, guild);
        await channel.SendMessageAsync($"{playerS.Mention}");
+       await BuildBoard(channel);
+    }
+
+    public static async Task BuildBoard(ISocketMessageChannel channel)
+    {
+        var builder = new ComponentBuilder()
+            .WithButton("label", "custom-id");
+        await channel.SendMessageAsync("Here is a button!", components: builder.Build());
     }
 }
