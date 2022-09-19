@@ -45,7 +45,7 @@ namespace tic_tac_toe_bot
             await _client.SetStatusAsync(UserStatus.Online);
             await _client.SetGameAsync($"Prefix: {ConfigManager.Config.Prefix}");
         }
-        public async Task MainAsync()
+        public  async Task MainAsync()
         {
             await ComponentsManager.loadComponents();
             _client.Ready += OnReady;

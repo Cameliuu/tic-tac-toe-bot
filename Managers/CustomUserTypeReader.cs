@@ -1,5 +1,7 @@
 using Discord;
 using System.Threading.Tasks;
+using Discord.WebSocket;
+
 namespace tic_tac_toe_bot.Managers;
 
 public class CustomUserTypeReader
