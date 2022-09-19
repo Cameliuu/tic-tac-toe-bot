@@ -13,51 +13,47 @@ public class ComponentsManager
         _client.ButtonExecuted += ComponentHandler;
     }
 
+    
+    public static async Task<bool> IsPlayerInGame(SocketMessageComponent component)
+    {
+        return (component.User.Username == GameManager.Player1.name ||
+                component.User.Username == GameManager.Player2.name)
+            ? true
+            : false;
+        
+    }
+
+    public static async Task<char> GetChoiceFromComponent(SocketMessageComponent component)
+    {
+        
+        return (component.User.Username == GameManager.Player1.name)
+            ? 'X'
+            : 'O';
+    }
+
+    public static async Task<char> GetNextTurn(char turn)
+    {
+        return (turn == 'X') ? 'O' : 'X';
+    }
     public static async Task UpdateComponent(SocketMessageComponent component, short row, short col)
     {
-        if(GameManager.active)
-        {
-            if(component.User.Username == GameManager.Player1.name || component.User.Username == GameManager.Player2.name)
-            {
-                if(component.User.Username == GameManager.Player1.name)
-                {
-                    if(GameManager.turn == 'X')
-                    {
-                        GameManager.board[row, col] = GameManager.Player1.choice;
-                        GameManager.turn = GameManager.Player2.choice;
-                        await component.UpdateAsync(properties => properties.Components = GameManager.GetBuilder().Result.Build());
-                    }
-                    else
-                    {
-                        await component.Channel.SendMessageAsync($"{component.User.Mention}, nu este randul tau!");
-                    }
-                }
-
-                if (component.User.Username == GameManager.Player2.name)
-                {
-                    if(GameManager.turn == 'O')
-                    {
-                        GameManager.board[row, col] = GameManager.Player2.choice;
-                        GameManager.turn = GameManager.Player1.choice;
-                        await component.UpdateAsync(properties => properties.Components = GameManager.GetBuilder().Result.Build());
-                    }
-                    else
-                    {
-                        await component.Channel.SendMessageAsync($"{component.User.Mention}, nu este randul tau!");
-                    }
-                }
-            }
-            else
-            {
-                await component.Channel.SendMessageAsync(
-                    $"{component.User.Mention} nu poti participa intrucat este deja un joc in desfasurare");
-            }
-        }
+        if (!IsPlayerInGame(component).Result)
+            await component.Channel.SendMessageAsync(
+                $"{component.User.Mention}, nu poti participa intrucat nu faci parte dintre participanti");
         else
         {
-            await component.Channel.SendMessageAsync("Nu este niciun joc in desfasurare");
+            if (GameManager.turn != GetChoiceFromComponent(component).Result)
+                await component.Channel.SendMessageAsync($"{component.User.Mention}, nu este randul tau!");
+            else
+            {
+                GameManager.turn = GetNextTurn(GetChoiceFromComponent(component).Result).Result;
+                GameManager.board[row, col] = GetChoiceFromComponent(component).Result;
+                await component.UpdateAsync(properties =>
+                    properties.Components = GameManager.GetBuilder().Result.Build());
+            }
         }
     }
+   
     public  static async Task ComponentHandler(SocketMessageComponent component)
     {
         switch (component.Data.CustomId)
