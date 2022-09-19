@@ -24,6 +24,21 @@ public class ComponentsManager
                     if(GameManager.turn == 'X')
                     {
                         GameManager.board[row, col] = GameManager.Player1.choice;
+                        GameManager.turn = GameManager.Player2.choice;
+                        await component.UpdateAsync(properties => properties.Components = GameManager.GetBuilder().Result.Build());
+                    }
+                    else
+                    {
+                        await component.Channel.SendMessageAsync($"{component.User.Mention}, nu este randul tau!");
+                    }
+                }
+
+                if (component.User.Username == GameManager.Player2.name)
+                {
+                    if(GameManager.turn == 'O')
+                    {
+                        GameManager.board[row, col] = GameManager.Player2.choice;
+                        GameManager.turn = GameManager.Player1.choice;
                         await component.UpdateAsync(properties => properties.Components = GameManager.GetBuilder().Result.Build());
                     }
                     else
@@ -75,8 +90,10 @@ public class ComponentsManager
             case "9":
                 await UpdateComponent(component,2,2);
                 break;
-            
-            
+            case "yes":
+                component.UpdateAsync(p => p.Components = GameManager.GetBuilder().Result.Build());
+                break;
+
         }
     }
 }
