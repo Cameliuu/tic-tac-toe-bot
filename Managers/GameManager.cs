@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Discord;
 using Discord.WebSocket;
 using Microsoft.VisualBasic;
@@ -45,19 +46,113 @@ public class GameManager
         Console.WriteLine($"{DateTime.Now}\tGame active");
     }
 
-    public  static async Task<ComponentBuilder> GetBuilder()
+    public static async Task<ComponentBuilder> GetBuilder([Optional] int pos)
     {
-        var builder = new ComponentBuilder()
-            .WithButton(board[0,0].ToString(), "1", row: 0)
-            .WithButton(board[0,1].ToString(), "2", row: 1)
-            .WithButton(board[0,2].ToString(), "3", row: 2)
-            .WithButton(board[1,0].ToString(), "4", row: 0)
-            .WithButton(board[1,1].ToString(), "5", row: 1)
-            .WithButton(board[1,2].ToString(), "6", row: 2)
-            .WithButton(board[2,0].ToString(), "7", row: 0)
-            .WithButton(board[2,1].ToString(), "8", row: 1)
-            .WithButton(board[2,2].ToString(), "9", row: 2);
+        Console.WriteLine($"Function called, pos={pos}");
+        var builder = new ComponentBuilder();
+        switch (pos)
+        {
+            case 0:
+                builder.WithButton(board[0, 0].ToString(), "1", row: 0, style: ButtonStyle.Success);
+                builder.WithButton(board[0, 1].ToString(), "2", row: 1);
+                builder.WithButton(board[0, 2].ToString(), "3", row: 2);
+                builder.WithButton(board[1, 0].ToString(), "4", row: 0, style: ButtonStyle.Success);
+                builder.WithButton(board[1, 1].ToString(), "5", row: 1);
+                builder.WithButton(board[1, 2].ToString(), "6", row: 2);
+                builder.WithButton(board[2, 0].ToString(), "7", row: 0, style: ButtonStyle.Success);
+                builder.WithButton(board[2, 1].ToString(), "8", row: 1);
+                builder.WithButton(board[2, 2].ToString(), "9", row: 2);
+                break;
+            case 1:
+                builder.WithButton(board[0, 0].ToString(), "1", row: 0);
+                builder.WithButton(board[0, 1].ToString(), "2", row: 1, style: ButtonStyle.Success);
+                builder.WithButton(board[0, 2].ToString(), "3", row: 2);
+                builder.WithButton(board[1, 0].ToString(), "4", row: 0);
+                builder.WithButton(board[1, 1].ToString(), "5", row: 1, style: ButtonStyle.Success);
+                builder.WithButton(board[1, 2].ToString(), "6", row: 2);
+                builder.WithButton(board[2, 0].ToString(), "7", row: 0);
+                builder.WithButton(board[2, 1].ToString(), "8", row: 1, style: ButtonStyle.Success);
+                builder.WithButton(board[2, 2].ToString(), "9", row: 2);
+                break;
+            case 2:
+                builder.WithButton(board[0, 0].ToString(), "1", row: 0);
+                builder.WithButton(board[0, 1].ToString(), "2", row: 1);
+                builder.WithButton(board[0, 2].ToString(), "3", row: 2, style: ButtonStyle.Success);
+                builder.WithButton(board[1, 0].ToString(), "4", row: 0);
+                builder.WithButton(board[1, 1].ToString(), "5", row: 1);
+                builder.WithButton(board[1, 2].ToString(), "6", row: 2, style: ButtonStyle.Success);
+                builder.WithButton(board[2, 0].ToString(), "7", row: 0);
+                builder.WithButton(board[2, 1].ToString(), "8", row: 1);
+                builder.WithButton(board[2, 2].ToString(), "9", row: 2, style: ButtonStyle.Success);
+                break;
+            case 3:
+                builder.WithButton(board[0, 0].ToString(), "1", row: 0, style: ButtonStyle.Success);
+                builder.WithButton(board[0, 1].ToString(), "2", row: 1, style: ButtonStyle.Success);
+                builder.WithButton(board[0, 2].ToString(), "3", row: 2, style: ButtonStyle.Success);
+                builder.WithButton(board[1, 0].ToString(), "4", row: 0);
+                builder.WithButton(board[1, 1].ToString(), "5", row: 1);
+                builder.WithButton(board[1, 2].ToString(), "6", row: 2);
+                builder.WithButton(board[2, 0].ToString(), "7", row: 0);
+                builder.WithButton(board[2, 1].ToString(), "8", row: 1);
+                builder.WithButton(board[2, 2].ToString(), "9", row: 2);
+                break;
+            case 4:
+                builder.WithButton(board[0, 0].ToString(), "1", row: 0);
+                builder.WithButton(board[0, 1].ToString(), "2", row: 1);
+                builder.WithButton(board[0, 2].ToString(), "3", row: 2);
+                builder.WithButton(board[1, 0].ToString(), "4", row: 0, style: ButtonStyle.Success);
+                builder.WithButton(board[1, 1].ToString(), "5", row: 1, style: ButtonStyle.Success);
+                builder.WithButton(board[1, 2].ToString(), "6", row: 2, style: ButtonStyle.Success);
+                builder.WithButton(board[2, 0].ToString(), "7", row: 0);
+                builder.WithButton(board[2, 1].ToString(), "8", row: 1);
+                builder.WithButton(board[2, 2].ToString(), "9", row: 2);
+                break;
+            case 5:
+                builder.WithButton(board[0, 0].ToString(), "1", row: 0);
+                builder.WithButton(board[0, 1].ToString(), "2", row: 1);
+                builder.WithButton(board[0, 2].ToString(), "3", row: 2);
+                builder.WithButton(board[1, 0].ToString(), "4", row: 0);
+                builder.WithButton(board[1, 1].ToString(), "5", row: 1);
+                builder.WithButton(board[1, 2].ToString(), "6", row: 2);
+                builder.WithButton(board[2, 0].ToString(), "7", row: 0, style: ButtonStyle.Success);
+                builder.WithButton(board[2, 1].ToString(), "8", row: 1, style: ButtonStyle.Success);
+                builder.WithButton(board[2, 2].ToString(), "9", row: 2, style: ButtonStyle.Success);
+                break;
+            case 6:
+                builder.WithButton(board[0, 0].ToString(), "1", row: 0, style: ButtonStyle.Success);
+                builder.WithButton(board[0, 1].ToString(), "2", row: 1);
+                builder.WithButton(board[0, 2].ToString(), "3", row: 2);
+                builder.WithButton(board[1, 0].ToString(), "4", row: 0);
+                builder.WithButton(board[1, 1].ToString(), "5", row: 1, style: ButtonStyle.Success);
+                builder.WithButton(board[1, 2].ToString(), "6", row: 2);
+                builder.WithButton(board[2, 0].ToString(), "7", row: 0);
+                builder.WithButton(board[2, 1].ToString(), "8", row: 1);
+                builder.WithButton(board[2, 2].ToString(), "9", row: 2, style: ButtonStyle.Success);
+                break;
+            case 7:
+                builder.WithButton(board[0, 0].ToString(), "1", row: 0);
+                builder.WithButton(board[0, 1].ToString(), "2", row: 1);
+                builder.WithButton(board[0, 2].ToString(), "3", row: 2, style: ButtonStyle.Success);
+                builder.WithButton(board[1, 0].ToString(), "4", row: 0);
+                builder.WithButton(board[1, 1].ToString(), "5", row: 1, style: ButtonStyle.Success);
+                builder.WithButton(board[1, 2].ToString(), "6", row: 2);
+                builder.WithButton(board[2, 0].ToString(), "7", row: 0, style: ButtonStyle.Success);
+                builder.WithButton(board[2, 1].ToString(), "8", row: 1);
+                builder.WithButton(board[2, 2].ToString(), "9", row: 2);
+                break;
+            default:
+                builder.WithButton(board[0, 0].ToString(), "1", row: 0);
+                builder.WithButton(board[0, 1].ToString(), "2", row: 1);
+                builder.WithButton(board[0, 2].ToString(), "3", row: 2);
+                builder.WithButton(board[1, 0].ToString(), "4", row: 0);
+                builder.WithButton(board[1, 1].ToString(), "5", row: 1);
+                builder.WithButton(board[1, 2].ToString(), "6", row: 2);
+                builder.WithButton(board[2, 0].ToString(), "7", row: 0);
+                builder.WithButton(board[2, 1].ToString(), "8", row: 1);
+                builder.WithButton(board[2, 2].ToString(), "9", row: 2);
+                break;
+        }
         return builder;
+        
     }
-    
 }
