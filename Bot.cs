@@ -47,6 +47,7 @@ namespace tic_tac_toe_bot
         }
         public async Task MainAsync()
         {
+            await ComponentsManager.loadComponents();
             _client.Ready += OnReady;
             if (string.IsNullOrWhiteSpace(ConfigManager.Config.Token)) return;
             await CommandManager.InstallCommandsAsync();
