@@ -14,6 +14,8 @@ This is a personal who aims to help me:
 
 ## :question:Usage
 
+![ezgif com-gif-maker](https://user-images.githubusercontent.com/93036916/191362113-c07d13b3-8805-4396-bc67-37acbbbf6461.gif)
+
 To use this bot after adding it to your server, you need to:
 
 * Use "k!ttt" and mention the person you want to invite to a game
@@ -28,4 +30,4 @@ To use this bot after adding it to your server, you need to:
 
 ##
 
-![ezgif com-gif-maker](https://user-images.githubusercontent.com/93036916/191362113-c07d13b3-8805-4396-bc67-37acbbbf6461.gif)
+
