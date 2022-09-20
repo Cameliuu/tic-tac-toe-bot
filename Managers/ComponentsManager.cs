@@ -27,12 +27,16 @@ public class ComponentsManager
         
     }
 
-    private static async Task PopulateChoices(Player player, short pos1, short pos2,[Optional] short pos3)
+    private static async Task PopulateChoices(Player player, short pos1, short pos2,[Optional] short pos3, [Optional] short pos4)
     {
+        Console.WriteLine($"{pos1}:{player.choices[pos1]}");
+        Console.WriteLine($"{pos2}:{player.choices[pos2]}");
         player.choices[pos1]++;
         player.choices[pos2]++;
         if(pos3 !=0)
             player.choices[pos3]++;
+        if (pos4 != 0)
+            player.choices[pos4]++;
     }
     private static async Task<char> GetChoiceFromComponent(SocketMessageComponent component)
     {
@@ -71,25 +75,28 @@ public class ComponentsManager
                 GameManager.turn = GetNextTurn(GetChoiceFromComponent(component).Result).Result;
                 GameManager.board[row, col] = GetChoiceFromComponent(component).Result;
                 await component.UpdateAsync(properties =>
-                    properties.Components = GameManager.GetBuilder(-1).Result.Build());
+                    properties.Components = GameManager.GetBuilder(-1).Result);
                 GameManager.tries++;
+                Console.WriteLine("PLayer 1");
+                foreach(var choice in GameManager.Player1.choices)
+                    Console.Write($"{choice}\t");
+                Console.WriteLine("PLayer 2");
+                foreach (var choice in GameManager.Player2.choices)
+                    Console.Write($"{choice}\t");
                 if (GameManager.tries > 3)
                 {
                     if (GameManager.Player1.choices.Contains(3))
                     {
-                        Console.WriteLine(Array.IndexOf(GameManager.Player1.choices, 2));
                         
                         await component.Channel.SendMessageAsync("X castiga");
-                        await component.UpdateAsync(properties =>
-                            properties.Components =   GameManager.GetBuilder(Array.IndexOf(GameManager.Player1.choices, 3)).Result.Build());
-                       
-                        
+                        await component.ModifyOriginalResponseAsync(properties =>
+                            properties.Components = GameManager.GetBuilder(Array.IndexOf(GameManager.Player1.choices,3)).Result);
                     }
                     if (GameManager.Player2.choices.Contains(3))
                     {
                         await component.Channel.SendMessageAsync("O castiga");
-                        await component.UpdateAsync(properties =>
-                            properties.Components =   GameManager.GetBuilder(Array.IndexOf(GameManager.Player2.choices, 3)).Result.Build());
+                        await component.ModifyOriginalResponseAsync(properties =>
+                            properties.Components = GameManager.GetBuilder(Array.IndexOf(GameManager.Player2.choices,3)).Result);
                     }
                 }
             }
@@ -134,9 +141,9 @@ public class ComponentsManager
                 break;
             case "5":
                 if (await IsFirstPlayer(component))
-                    await PopulateChoices(GameManager.Player1, 1,4 , 6);
+                    await PopulateChoices(GameManager.Player1, 1,4 , 6,7);
                 else
-                    await PopulateChoices(GameManager.Player2, 1, 4, 6);
+                    await PopulateChoices(GameManager.Player2, 1, 4, 6,7);
                 await UpdateComponent(component,1,1);
                 
                 break;
@@ -157,6 +164,7 @@ public class ComponentsManager
                 
                 break;
             case "8":
+                Console.WriteLine("INTRA");
                 if (await IsFirstPlayer(component))
                     await PopulateChoices(GameManager.Player1, 2, 4);
                 else
@@ -166,14 +174,13 @@ public class ComponentsManager
                 break;
             case "9":
                 if (await IsFirstPlayer(component))
-                    await PopulateChoices(GameManager.Player1, 2, 5,6);
+                    await PopulateChoices(GameManager.Player1, 2, 3,6);
                 else
-                    await PopulateChoices(GameManager.Player2, 2,5,6);
+                    await PopulateChoices(GameManager.Player2, 2,3,6);
                 await UpdateComponent(component,2,2);
-                
                 break;
             case "yes":
-                await component.UpdateAsync(p => p.Components = GameManager.GetBuilder(-1).Result.Build());
+                await component.UpdateAsync(p => p.Components = GameManager.GetBuilder(-1).Result);
                 break;
 
         }
