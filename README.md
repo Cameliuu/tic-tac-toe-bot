@@ -12,3 +12,16 @@ This is a personal who aims to help me:
 
 -Build my personal portofolio.
 
+## Usage
+
+To use this bot after adding it to your server, you need to:
+
+-Use "k!ttt" and mention the person you want to invite to a game(**THE PERSON MUST BE ONLINE AT THE MOMENT OF USING THE COMMAND**).
+
+-The person invinted has the option to either accept or decline the game.
+
+-After accepting, the person who executed the command will be attributed 'X', the other person will be attributed 'O'.
+
+###In order to win you need to place your sign either in a horizontal line, vertical line or a diagonal line
+
+![ezgif com-gif-maker](https://user-images.githubusercontent.com/93036916/191362113-c07d13b3-8805-4396-bc67-37acbbbf6461.gif)
