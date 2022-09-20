@@ -26,4 +26,6 @@ To use this bot after adding it to your server, you need to:
 
 **In order to win you need to place your sign either in a horizontal line, vertical line or a diagonal line**
 
+##
+
 ![ezgif com-gif-maker](https://user-images.githubusercontent.com/93036916/191362113-c07d13b3-8805-4396-bc67-37acbbbf6461.gif)
