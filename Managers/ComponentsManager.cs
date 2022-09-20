@@ -27,16 +27,27 @@ public class ComponentsManager
         
     }
 
-    private static async Task PopulateChoices(Player player, short pos1, short pos2,[Optional] short pos3, [Optional] short pos4)
+    private static async Task PopulateChoices(SocketMessageComponent component, short pos1, short pos2,[Optional] short pos3, [Optional] short pos4)
     {
-        Console.WriteLine($"{pos1}:{player.choices[pos1]}");
-        Console.WriteLine($"{pos2}:{player.choices[pos2]}");
-        player.choices[pos1]++;
-        player.choices[pos2]++;
-        if(pos3 !=0)
-            player.choices[pos3]++;
-        if (pos4 != 0)
-            player.choices[pos4]++;
+
+        if (await IsFirstPlayer(component))
+        {
+            GameManager.Player1.choices[pos1]++;
+            GameManager.Player1.choices[pos2]++;
+            if(pos3 !=0)
+               GameManager.Player1.choices[pos3]++;
+            if (pos4 != 0)
+              GameManager.Player1.choices[pos4]++;
+        }
+        else
+        {
+            GameManager.Player2.choices[pos1]++;
+            GameManager.Player2.choices[pos2]++;
+            if(pos3 !=0)
+                GameManager.Player2.choices[pos3]++;
+            if (pos4 != 0)
+                GameManager.Player2.choices[pos4]++;
+        }
     }
     private static async Task<char> GetChoiceFromComponent(SocketMessageComponent component)
     {
@@ -48,12 +59,6 @@ public class ComponentsManager
 
     private static async Task<bool> IsFirstPlayer(SocketMessageComponent component)
     {
-        if(component.User.Username == GameManager.Player1.name)
-            Console.WriteLine("DA");
-        else
-        {
-            Console.WriteLine("NU");
-        }
         return (component.User.Username == GameManager.Player1.name) ? true : false;
     }
     private static async Task<char> GetNextTurn(char turn)
@@ -108,81 +113,55 @@ public class ComponentsManager
         switch (component.Data.CustomId)
         {
             case "1":
-                if (await IsFirstPlayer(component))
-                    await PopulateChoices(GameManager.Player1, 0, 3, 6);
-                else
-                    await PopulateChoices(GameManager.Player2, 0, 3, 6);
                 await UpdateComponent(component,0,0);
-                
+                await PopulateChoices(component, 0, 3);
                 break;
             case "2":
-                if (await IsFirstPlayer(component)) 
-                    await PopulateChoices(GameManager.Player1, 0, 4);
-                else
-                    await PopulateChoices(GameManager.Player2, 0, 4);
-                await UpdateComponent(component,0,1);
-                
+                await PopulateChoices(component, 0, 4);
                 break;
             case "3":
-                if (await IsFirstPlayer(component))
-                    await PopulateChoices(GameManager.Player1, 0, 5, 7);
-                else
-                    await PopulateChoices(GameManager.Player2, 0, 5, 7);
+                await PopulateChoices(component, 0, 5,7);
                 await UpdateComponent(component,0,2);
                 
                 break;
             case "4":
-                if (await IsFirstPlayer(component))
-                    await PopulateChoices(GameManager.Player1, 1, 3);
-                else
-                    await PopulateChoices(GameManager.Player2, 1, 3);
+                await PopulateChoices(component, 1, 3);
                 await UpdateComponent(component,1,0);
                 
                 break;
             case "5":
-                if (await IsFirstPlayer(component))
-                    await PopulateChoices(GameManager.Player1, 1,4 , 6,7);
-                else
-                    await PopulateChoices(GameManager.Player2, 1, 4, 6,7);
+                await PopulateChoices(component, 1, 4,6,7);
                 await UpdateComponent(component,1,1);
                 
                 break;
             case "6":
-                if (await IsFirstPlayer(component))
-                    await PopulateChoices(GameManager.Player1, 1, 5);
-                else
-                    await PopulateChoices(GameManager.Player2, 1, 5);
+                await PopulateChoices(component, 1, 5);
                 await UpdateComponent(component,1,2);
                 
                 break;
             case "7":
-                if (await IsFirstPlayer(component))
-                    await PopulateChoices(GameManager.Player1, 2, 3,7);
-                else
-                    await PopulateChoices(GameManager.Player2, 2,3, 7);
+                await PopulateChoices(component, 2, 3,7);
                 await UpdateComponent(component,2,0);
                 
                 break;
             case "8":
-                Console.WriteLine("INTRA");
-                if (await IsFirstPlayer(component))
-                    await PopulateChoices(GameManager.Player1, 2, 4);
-                else
-                    await PopulateChoices(GameManager.Player2, 2,4);
+                await PopulateChoices(component, 2, 4);
                 await UpdateComponent(component,2,1);
                 
                 break;
             case "9":
-                if (await IsFirstPlayer(component))
-                    await PopulateChoices(GameManager.Player1, 2, 3,6);
-                else
-                    await PopulateChoices(GameManager.Player2, 2,3,6);
+                await PopulateChoices(component, 2, 3,6);
                 await UpdateComponent(component,2,2);
                 break;
             case "yes":
                 await component.UpdateAsync(p => p.Components = GameManager.GetBuilder(-1).Result);
                 break;
+            case "no":
+                await component.Channel.SendMessageAsync($"{component.User.Mention} a refuzat jocul!");
+                await component.Message.DeleteAsync();
+                
+                break;
 
-        }
+    }
     }
 }
