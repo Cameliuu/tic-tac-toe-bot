@@ -16,7 +16,9 @@ This is a personal who aims to help me:
 
 To use this bot after adding it to your server, you need to:
 
--Use "k!ttt" and mention the person you want to invite to a game(**THE PERSON MUST BE ONLINE AT THE MOMENT OF USING THE COMMAND**).
+-Use "k!ttt" and mention the person you want to invite to a game
+
+:exclamation:**THE PERSON MUST BE ONLINE AT THE MOMENT OF USING THE COMMAND**
 
 -The person invinted has the option to either accept or decline the game.
 
