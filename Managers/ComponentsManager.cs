@@ -29,9 +29,10 @@ public class ComponentsManager
 
     private static async Task PopulateChoices(SocketMessageComponent component, short pos1, short pos2,[Optional] short pos3, [Optional] short pos4)
     {
-
-        if (await IsFirstPlayer(component))
+        
+        if (await IsFirstPlayer(component) && GameManager.Player1.choice == GameManager.turn && GameManager.active)
         {
+          
             GameManager.Player1.choices[pos1]++;
             GameManager.Player1.choices[pos2]++;
             if(pos3 !=0)
@@ -39,8 +40,10 @@ public class ComponentsManager
             if (pos4 != 0)
               GameManager.Player1.choices[pos4]++;
         }
-        else
+        else if (!(await IsFirstPlayer(component))&& GameManager.Player2.choice == GameManager.turn && GameManager.active)
         {
+            Console.WriteLine($"{pos1}:{GameManager.Player2.choices[pos1]}");
+            Console.WriteLine($"{pos2}:{GameManager.Player2.choices[pos2]}");
             GameManager.Player2.choices[pos1]++;
             GameManager.Player2.choices[pos2]++;
             if(pos3 !=0)
@@ -57,6 +60,19 @@ public class ComponentsManager
             : 'O';
     }
 
+    private static async Task<bool> PlayerWon(Player player, SocketMessageComponent component)
+    {
+        if (player.choices.Contains(3))
+        {
+            await component.Channel.SendMessageAsync($"{player.name} castiga");
+            await component.ModifyOriginalResponseAsync(properties =>
+                properties.Components = GameManager.GetBuilder(Array.IndexOf(player.choices, 3)).Result);
+            await GameManager.SetActive(set: false);
+            return true;
+        }
+
+        return false;
+    }
     private static async Task<bool> IsFirstPlayer(SocketMessageComponent component)
     {
         return (component.User.Username == GameManager.Player1.name) ? true : false;
@@ -69,42 +85,40 @@ public class ComponentsManager
     private static async Task UpdateComponent(SocketMessageComponent component, short row, short col)
     {
         if (!IsPlayerInGame(component).Result)
+        {
             await component.Channel.SendMessageAsync(
                 $"{component.User.Mention}, nu poti participa intrucat nu faci parte dintre participanti");
-        else
+            return;
+        }
+
+        if (GameManager.turn != GetChoiceFromComponent(component).Result)
         {
-            if (GameManager.turn != GetChoiceFromComponent(component).Result)
-                await component.Channel.SendMessageAsync($"{component.User.Mention}, nu este randul tau!");
+            await component.Channel.SendMessageAsync($"{component.User.Mention}, nu este randul tau!");
+            return;
+        }
+
+        if (!GameManager.active)
+        {
+            await component.Channel.SendMessageAsync($"Nu este niciun joc in desfasurare!");
+            return;
+        }
+        GameManager.turn = GetNextTurn(GetChoiceFromComponent(component).Result).Result;
+        GameManager.board.choices[row, col] = GetChoiceFromComponent(component).Result;
+        GameManager.board.disabled[row, col] = true;
+        await component.UpdateAsync(properties =>
+            properties.Components = GameManager.GetBuilder(-1).Result);
+        GameManager.tries++;
+        if (GameManager.tries > 3)
+        {
+            if (GameManager.turn == 'O')
+                await PlayerWon(GameManager.Player1, component);
             else
-            {
-                GameManager.turn = GetNextTurn(GetChoiceFromComponent(component).Result).Result;
-                GameManager.board[row, col] = GetChoiceFromComponent(component).Result;
-                await component.UpdateAsync(properties =>
-                    properties.Components = GameManager.GetBuilder(-1).Result);
-                GameManager.tries++;
-                Console.WriteLine("PLayer 1");
-                foreach(var choice in GameManager.Player1.choices)
-                    Console.Write($"{choice}\t");
-                Console.WriteLine("PLayer 2");
-                foreach (var choice in GameManager.Player2.choices)
-                    Console.Write($"{choice}\t");
-                if (GameManager.tries > 3)
-                {
-                    if (GameManager.Player1.choices.Contains(3))
-                    {
-                        
-                        await component.Channel.SendMessageAsync("X castiga");
-                        await component.ModifyOriginalResponseAsync(properties =>
-                            properties.Components = GameManager.GetBuilder(Array.IndexOf(GameManager.Player1.choices,3)).Result);
-                    }
-                    if (GameManager.Player2.choices.Contains(3))
-                    {
-                        await component.Channel.SendMessageAsync("O castiga");
-                        await component.ModifyOriginalResponseAsync(properties =>
-                            properties.Components = GameManager.GetBuilder(Array.IndexOf(GameManager.Player2.choices,3)).Result);
-                    }
-                }
-            }
+                await PlayerWon(GameManager.Player2, component);
+        }
+        if(GameManager.tries==9 && (!(await PlayerWon(GameManager.Player1,component)) && !(await PlayerWon(GameManager.Player2,component))))
+        {
+            await component.Channel.SendMessageAsync("It's a tie!");
+            await GameManager.SetActive(set: false);
         }
     }
    
@@ -113,11 +127,12 @@ public class ComponentsManager
         switch (component.Data.CustomId)
         {
             case "1":
+                await PopulateChoices(component, 0, 3,6);
                 await UpdateComponent(component,0,0);
-                await PopulateChoices(component, 0, 3);
                 break;
             case "2":
                 await PopulateChoices(component, 0, 4);
+                await UpdateComponent(component, 0, 1);
                 break;
             case "3":
                 await PopulateChoices(component, 0, 5,7);
@@ -142,7 +157,6 @@ public class ComponentsManager
             case "7":
                 await PopulateChoices(component, 2, 3,7);
                 await UpdateComponent(component,2,0);
-                
                 break;
             case "8":
                 await PopulateChoices(component, 2, 4);
@@ -154,7 +168,14 @@ public class ComponentsManager
                 await UpdateComponent(component,2,2);
                 break;
             case "yes":
+            {
+                if (component.User.Username != GameManager.Player2.name)
+                {
+                    await component.Channel.SendMessageAsync($"Doar{GameManager.Player2.name} poate accepta!");
+                    return;
+                }
                 await component.UpdateAsync(p => p.Components = GameManager.GetBuilder(-1).Result);
+            }
                 break;
             case "no":
                 await component.Channel.SendMessageAsync($"{component.User.Mention} a refuzat jocul!");
