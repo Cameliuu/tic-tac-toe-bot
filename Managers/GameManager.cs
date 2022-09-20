@@ -17,6 +17,11 @@ public class GameManager
     public  static async Task StartGame(SocketUser user, ISocketMessageChannel channel,string player,SocketGuild guild)
     {
         var playerS=await CustomUserTypeReader.GetUserFromString(player, guild);
+        if (playerS.Status == UserStatus.Offline)
+        {
+            await channel.SendMessageAsync($"{playerS.Username} nu este online!");
+            return;
+        }
         board = new Board();
         Player1 = new Player();
         Player2 = new Player();
@@ -78,92 +83,92 @@ public class GameManager
         switch (pos)
         {
             case 0:
-                builder.WithButton(board.choices[0,0].ToString(), "1", row: 0, style: ButtonStyle.Success, disabled:board.disabled[0,0]);
-                builder.WithButton(board.choices[0,1].ToString(), "2", row: 0,style: ButtonStyle.Success,  disabled:board.disabled[0,1]);
-                builder.WithButton(board.choices[0,2].ToString(), "3", row: 0, style: ButtonStyle.Success, disabled:board.disabled[0,2]);
-                builder.WithButton(board.choices[1,0].ToString(), "4", row: 1, disabled:board.disabled[1,0]);
-                builder.WithButton(board.choices[1, 1].ToString(), "5", row: 1,disabled:board.disabled[1,1]);
-                builder.WithButton(board.choices[1, 2].ToString(), "6", row: 1,disabled:board.disabled[1,2]);
-                builder.WithButton(board.choices[2, 0].ToString(), "7", row: 2,disabled:board.disabled[2,0]);
-                builder.WithButton(board.choices[2, 1].ToString(), "8", row: 2,disabled:board.disabled[2,1]);
-                builder.WithButton(board.choices[2, 2].ToString(), "9", row: 2,disabled:board.disabled[2,2]);
+                builder.WithButton(board.choices[0,0].ToString(), "1", row: 0, style: ButtonStyle.Success, disabled:false);
+                builder.WithButton(board.choices[0,1].ToString(), "2", row: 0,style: ButtonStyle.Success,  disabled:false);
+                builder.WithButton(board.choices[0,2].ToString(), "3", row: 0, style: ButtonStyle.Success, disabled:false);
+                builder.WithButton(board.choices[1,0].ToString(), "4", row: 1, disabled:true);
+                builder.WithButton(board.choices[1, 1].ToString(), "5", row: 1,disabled:true);
+                builder.WithButton(board.choices[1, 2].ToString(), "6", row: 1,disabled:true);
+                builder.WithButton(board.choices[2, 0].ToString(), "7", row: 2,disabled:true);
+                builder.WithButton(board.choices[2, 1].ToString(), "8", row: 2,disabled:true);
+                builder.WithButton(board.choices[2, 2].ToString(), "9", row: 2,disabled:true);
                 break;
             case 1:
-                builder.WithButton(board.choices[0, 0].ToString(), "1", row: 0 ,disabled:board.disabled[0,0]);
-                builder.WithButton(board.choices[0, 1].ToString(), "2", row: 0 ,disabled:board.disabled[0,1]);
-                builder.WithButton(board.choices[0, 2].ToString(), "3", row: 0 ,disabled:board.disabled[0,2]);
-                builder.WithButton(board.choices[1, 0].ToString(), "4", row: 1, style: ButtonStyle.Success,disabled:board.disabled[1,0]);
-                builder.WithButton(board.choices[1, 1].ToString(), "5", row: 1, style: ButtonStyle.Success,disabled:board.disabled[1,1]);
-                builder.WithButton(board.choices[1, 2].ToString(), "6", row: 1, style: ButtonStyle.Success,disabled:board.disabled[1,2]);
-                builder.WithButton(board.choices[2, 0].ToString(), "7", row: 2 , disabled:board.disabled[2,0]);
-                builder.WithButton(board.choices[2, 1].ToString(), "8", row: 2 , disabled:board.disabled[2,1]);
-                builder.WithButton(board.choices[2, 2].ToString(), "9", row: 2  ,disabled:board.disabled[2,2]);
+                builder.WithButton(board.choices[0, 0].ToString(), "1", row: 0 ,disabled:true);
+                builder.WithButton(board.choices[0, 1].ToString(), "2", row: 0 ,disabled:true);
+                builder.WithButton(board.choices[0, 2].ToString(), "3", row: 0 ,disabled:true);
+                builder.WithButton(board.choices[1, 0].ToString(), "4", row: 1, style: ButtonStyle.Success,disabled:false);
+                builder.WithButton(board.choices[1, 1].ToString(), "5", row: 1, style: ButtonStyle.Success,disabled:false);
+                builder.WithButton(board.choices[1, 2].ToString(), "6", row: 1, style: ButtonStyle.Success,disabled:false);
+                builder.WithButton(board.choices[2, 0].ToString(), "7", row: 2 , disabled:true);
+                builder.WithButton(board.choices[2, 1].ToString(), "8", row: 2 , disabled:true);
+                builder.WithButton(board.choices[2, 2].ToString(), "9", row: 2  ,disabled:true);
                 break; 
             case 2:
-                builder.WithButton(board.choices[0, 0].ToString(), "1", row: 0, disabled:board.disabled[0,0]);  
-                builder.WithButton(board.choices[0, 1].ToString(), "2", row: 0, disabled:board.disabled[0,1]);
-                builder.WithButton(board.choices[0, 2].ToString(), "3", row: 0, disabled:board.disabled[0,2]);
-                builder.WithButton(board.choices[1, 0].ToString(), "4", row: 1, disabled:board.disabled[1,0]);
-                builder.WithButton(board.choices[1, 1].ToString(), "5", row: 1, disabled:board.disabled[1,1]);
-                builder.WithButton(board.choices[1, 2].ToString(), "6", row: 1, disabled:board.disabled[1,2]);
-                builder.WithButton(board.choices[2, 0].ToString(), "7", row: 2, style: ButtonStyle.Success, disabled:board.disabled[2,0]);
-                builder.WithButton(board.choices[2, 1].ToString(), "8", row: 2, style: ButtonStyle.Success, disabled:board.disabled[2,1]);
-                builder.WithButton(board.choices[2, 2].ToString(), "9", row: 2, style: ButtonStyle.Success, disabled:board.disabled[2,2]);
+                builder.WithButton(board.choices[0, 0].ToString(), "1", row: 0, disabled:true);  
+                builder.WithButton(board.choices[0, 1].ToString(), "2", row: 0, disabled:true);
+                builder.WithButton(board.choices[0, 2].ToString(), "3", row: 0, disabled:true);
+                builder.WithButton(board.choices[1, 0].ToString(), "4", row: 1, disabled:true);
+                builder.WithButton(board.choices[1, 1].ToString(), "5", row: 1, disabled:true);
+                builder.WithButton(board.choices[1, 2].ToString(), "6", row: 1, disabled:true);
+                builder.WithButton(board.choices[2, 0].ToString(), "7", row: 2, style: ButtonStyle.Success, disabled:false);
+                builder.WithButton(board.choices[2, 1].ToString(), "8", row: 2, style: ButtonStyle.Success, disabled:false);
+                builder.WithButton(board.choices[2, 2].ToString(), "9", row: 2, style: ButtonStyle.Success, disabled:false);
                 break;
             case 3:
-                builder.WithButton(board.choices[0, 0].ToString(), "1", row: 0, style: ButtonStyle.Success, disabled:board.disabled[0,0]);
-                builder.WithButton(board.choices[0, 1].ToString(), "2", row: 0,disabled:board.disabled[0,1]);
-                builder.WithButton(board.choices[0, 2].ToString(), "3", row: 0,disabled:board.disabled[0,2]);
-                builder.WithButton(board.choices[1, 0].ToString(), "4", row: 1,style: ButtonStyle.Success, disabled:board.disabled[1,0]);
-                builder.WithButton(board.choices[1, 1].ToString(), "5", row: 1,disabled:board.disabled[1,1]);
-                builder.WithButton(board.choices[1, 2].ToString(), "6", row: 1,disabled:board.disabled[1,2]);
-                builder.WithButton(board.choices[2, 0].ToString(), "7", row: 2,style: ButtonStyle.Success,disabled:board.disabled[2,0]);
-                builder.WithButton(board.choices[2, 1].ToString(), "8", row: 2,disabled:board.disabled[2,1]);
-                builder.WithButton(board.choices[2, 2].ToString(), "9", row: 2,disabled:board.disabled[2,2]);
+                builder.WithButton(board.choices[0, 0].ToString(), "1", row: 0, style: ButtonStyle.Success, disabled:false);
+                builder.WithButton(board.choices[0, 1].ToString(), "2", row: 0,disabled:true);
+                builder.WithButton(board.choices[0, 2].ToString(), "3", row: 0,disabled:true);
+                builder.WithButton(board.choices[1, 0].ToString(), "4", row: 1,style: ButtonStyle.Success, disabled:false);
+                builder.WithButton(board.choices[1, 1].ToString(), "5", row: 1,disabled:true);
+                builder.WithButton(board.choices[1, 2].ToString(), "6", row: 1,disabled:true);
+                builder.WithButton(board.choices[2, 0].ToString(), "7", row: 2,style: ButtonStyle.Success,disabled:false);
+                builder.WithButton(board.choices[2, 1].ToString(), "8", row: 2,disabled:true);
+                builder.WithButton(board.choices[2, 2].ToString(), "9", row: 2,disabled:true);
                 break;
             case 4:
-                builder.WithButton(board.choices[0, 0].ToString(), "1", row: 0,disabled:board.disabled[0,0]);
-                builder.WithButton(board.choices[0, 1].ToString(), "2", row: 0, style: ButtonStyle.Success,disabled:board.disabled[0,1]);
-                builder.WithButton(board.choices[0, 2].ToString(), "3", row: 0,disabled:board.disabled[0,2]);
-                builder.WithButton(board.choices[1, 0].ToString(), "4", row: 1,disabled:board.disabled[1,0]);
-                builder.WithButton(board.choices[1, 1].ToString(), "5", row: 1, style: ButtonStyle.Success,disabled:board.disabled[1,1]);
-                builder.WithButton(board.choices[1, 2].ToString(), "6", row: 1,disabled:board.disabled[1,2]);
-                builder.WithButton(board.choices[2, 0].ToString(), "7", row: 2,disabled:board.disabled[2,0]);
-                builder.WithButton(board.choices[2, 1].ToString(), "8", row: 2, style: ButtonStyle.Success,disabled:board.disabled[2,1]);
-                builder.WithButton(board.choices[2, 2].ToString(), "9", row: 2,disabled:board.disabled[2,2]);
+                builder.WithButton(board.choices[0, 0].ToString(), "1", row: 0,disabled:true);
+                builder.WithButton(board.choices[0, 1].ToString(), "2", row: 0,style: ButtonStyle.Success,disabled:false);
+                builder.WithButton(board.choices[0, 2].ToString(), "3", row: 0,disabled:!board.disabled[0,2]);
+                builder.WithButton(board.choices[1, 0].ToString(), "4", row: 1,disabled:!board.disabled[1,0]);
+                builder.WithButton(board.choices[1, 1].ToString(), "5", row: 1, style: ButtonStyle.Success,disabled:false);
+                builder.WithButton(board.choices[1, 2].ToString(), "6", row: 1,disabled:true);
+                builder.WithButton(board.choices[2, 0].ToString(), "7", row: 2,disabled:true);
+                builder.WithButton(board.choices[2, 1].ToString(), "8", row: 2, style: ButtonStyle.Success,disabled:false);
+                builder.WithButton(board.choices[2, 2].ToString(), "9", row: 2,disabled:true);
                 break;
             case 5:
-                builder.WithButton(board.choices[0, 0].ToString(), "1", row: 0,disabled:board.disabled[0,0]);
-                builder.WithButton(board.choices[0, 1].ToString(), "2", row: 0,disabled:board.disabled[0,1]);
-                builder.WithButton(board.choices[0, 2].ToString(), "3", row: 0, style: ButtonStyle.Success,disabled:board.disabled[0,2]);
-                builder.WithButton(board.choices[1, 0].ToString(), "4", row: 1,disabled:board.disabled[1,0]);
-                builder.WithButton(board.choices[1, 1].ToString(), "5", row: 1,disabled:board.disabled[1,1]);
-                builder.WithButton(board.choices[1, 2].ToString(), "6", row: 1, style: ButtonStyle.Success,disabled:board.disabled[1,2]);
-                builder.WithButton(board.choices[2, 0].ToString(), "7", row: 2,disabled:board.disabled[2,0]);
-                builder.WithButton(board.choices[2, 1].ToString(), "8", row: 2,disabled:board.disabled[2,1]);
-                builder.WithButton(board.choices[2, 2].ToString(), "9", row: 2, style: ButtonStyle.Success,disabled:board.disabled[2,2]);
+                builder.WithButton(board.choices[0, 0].ToString(), "1", row: 0,disabled:true);
+                builder.WithButton(board.choices[0, 1].ToString(), "2", row: 0,disabled:true);
+                builder.WithButton(board.choices[0, 2].ToString(), "3", row: 0, style: ButtonStyle.Success,disabled:false);
+                builder.WithButton(board.choices[1, 0].ToString(), "4", row: 1,disabled:true);
+                builder.WithButton(board.choices[1, 1].ToString(), "5", row: 1,disabled:true);
+                builder.WithButton(board.choices[1, 2].ToString(), "6", row: 1, style: ButtonStyle.Success,disabled:false);
+                builder.WithButton(board.choices[2, 0].ToString(), "7", row: 2,disabled:true);
+                builder.WithButton(board.choices[2, 1].ToString(), "8", row: 2,disabled:true);
+                builder.WithButton(board.choices[2, 2].ToString(), "9", row: 2, style: ButtonStyle.Success,disabled:false);
                 break;
             case 6:
-                builder.WithButton(board.choices[0, 0].ToString(), "1", row: 0, style: ButtonStyle.Success,disabled:board.disabled[0,0]);
-                builder.WithButton(board.choices[0, 1].ToString(), "2", row: 0,disabled:board.disabled[0,1]);
-                builder.WithButton(board.choices[0, 2].ToString(), "3", row: 0,disabled:board.disabled[0,2]);
-                builder.WithButton(board.choices[1, 0].ToString(), "4", row: 1,disabled:board.disabled[1,0]);
-                builder.WithButton(board.choices[1, 1].ToString(), "5", row: 1, style: ButtonStyle.Success,disabled:board.disabled[1,1]);
-                builder.WithButton(board.choices[1, 2].ToString(), "6", row: 1,disabled:board.disabled[1,2]);
-                builder.WithButton(board.choices[2, 0].ToString(), "7", row: 2,disabled:board.disabled[2,0]);
-                builder.WithButton(board.choices[2, 1].ToString(), "8", row: 2,disabled:board.disabled[2,1]);
-                builder.WithButton(board.choices[2, 2].ToString(), "9", row: 2, style: ButtonStyle.Success,disabled:board.disabled[2,2]);
+                builder.WithButton(board.choices[0, 0].ToString(), "1", row: 0, style: ButtonStyle.Success,disabled:false);
+                builder.WithButton(board.choices[0, 1].ToString(), "2", row: 0,disabled:true);
+                builder.WithButton(board.choices[0, 2].ToString(), "3", row: 0,disabled:true);
+                builder.WithButton(board.choices[1, 0].ToString(), "4", row: 1,disabled:true);
+                builder.WithButton(board.choices[1, 1].ToString(), "5", row: 1, style: ButtonStyle.Success,disabled:false);
+                builder.WithButton(board.choices[1, 2].ToString(), "6", row: 1,disabled:true);
+                builder.WithButton(board.choices[2, 0].ToString(), "7", row: 2,disabled:true);
+                builder.WithButton(board.choices[2, 1].ToString(), "8", row: 2,disabled:true);
+                builder.WithButton(board.choices[2, 2].ToString(), "9", row: 2, style: ButtonStyle.Success,disabled:false);
                 break;
             case 7:
-                builder.WithButton(board.choices[0, 0].ToString(), "1", row: 0,disabled:board.disabled[0,0]);
-                builder.WithButton(board.choices[0, 1].ToString(), "2", row: 0,disabled:board.disabled[0,1]);
-                builder.WithButton(board.choices[0, 2].ToString(), "3", row: 0, style: ButtonStyle.Success,disabled:board.disabled[0,2]);
-                builder.WithButton(board.choices[1, 0].ToString(), "4", row: 1,disabled:board.disabled[1,0]);
-                builder.WithButton(board.choices[1, 1].ToString(), "5", row: 1, style: ButtonStyle.Success,disabled:board.disabled[1,1]);
-                builder.WithButton(board.choices[1, 2].ToString(), "6", row: 1,disabled:board.disabled[1,2]);
-                builder.WithButton(board.choices[2, 0].ToString(), "7", row: 2, style: ButtonStyle.Success,disabled:board.disabled[2,0]);
-                builder.WithButton(board.choices[2, 1].ToString(), "8", row: 2,disabled:board.disabled[2,1]);
-                builder.WithButton(board.choices[2, 2].ToString(), "9", row: 2,disabled:board.disabled[2,2]);
+                builder.WithButton(board.choices[0, 0].ToString(), "1", row: 0,disabled:true);
+                builder.WithButton(board.choices[0, 1].ToString(), "2", row: 0,disabled:true);
+                builder.WithButton(board.choices[0, 2].ToString(), "3", row: 0, style: ButtonStyle.Success,disabled:false);
+                builder.WithButton(board.choices[1, 0].ToString(), "4", row: 1,disabled:true);
+                builder.WithButton(board.choices[1, 1].ToString(), "5", row: 1, style: ButtonStyle.Success,disabled:false);
+                builder.WithButton(board.choices[1, 2].ToString(), "6", row: 1,disabled:true);
+                builder.WithButton(board.choices[2, 0].ToString(), "7", row: 2, style: ButtonStyle.Success,disabled:false);
+                builder.WithButton(board.choices[2, 1].ToString(), "8", row: 2,disabled:true);
+                builder.WithButton(board.choices[2, 2].ToString(), "9", row: 2,disabled:true);
                 break;
             default:
                 builder.WithButton(board.choices[0, 0].ToString(), "1", row: 0,disabled:board.disabled[0,0]);

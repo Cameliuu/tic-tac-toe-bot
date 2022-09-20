@@ -102,11 +102,17 @@ public class ComponentsManager
             await component.Channel.SendMessageAsync($"Nu este niciun joc in desfasurare!");
             return;
         }
+        
         GameManager.turn = GetNextTurn(GetChoiceFromComponent(component).Result).Result;
         GameManager.board.choices[row, col] = GetChoiceFromComponent(component).Result;
         GameManager.board.disabled[row, col] = true;
+        
         await component.UpdateAsync(properties =>
-            properties.Components = GameManager.GetBuilder(-1).Result);
+        {
+            properties.Components = GameManager.GetBuilder(-1).Result;
+            properties.Content = $"{GameManager.turn}'s turn";
+        });
+        
         GameManager.tries++;
         if (GameManager.tries > 3)
         {

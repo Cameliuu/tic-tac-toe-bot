@@ -22,7 +22,7 @@ namespace tic_tac_toe_bot
             _client = new DiscordSocketClient(new DiscordSocketConfig()
             {
                 LogLevel = LogSeverity.Debug,
-                GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.MessageContent
+                GatewayIntents = GatewayIntents.All
             });
             _commandService = new CommandService(new CommandServiceConfig()
             {
